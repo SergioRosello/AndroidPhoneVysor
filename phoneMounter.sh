@@ -5,6 +5,8 @@
 # URL for documentation: https://stackoverflow.com/a/29754866/4264080
 # Tutorial: https://wiki.bash-hackers.org/howto/getopts_tutorial
 
+#TODO: pass parameter to execute, not use OPTARG directly. This way we can control if we want to use every device or only X devices
+
 execute () {
   i=0
   # List available adb devices:

@@ -11,13 +11,14 @@ execute () {
   (adb devices) | grep -w "device" | awk '{ print $1 }' | 
 
 # Execute the scrcpy command on every device connected
-  while [ $(read device) -o $i -l $OPTARG ] 
+  while read device
   do
-    sleep 4
-    nohup scrcpy -s $device &>/dev/null &
-    ((i++))
+    if [[ "$i" -lt $OPTARG ]]; then
+      sleep 4
+      nohup scrcpy -s $device &>/dev/null &
+      ((i++))
+    fi
   done
-
 }
 
 while getopts ":n:" opt; do

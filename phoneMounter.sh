@@ -9,13 +9,18 @@
 
 execute () {
   i=0
+  #Gets the value of the parameter passed to the function
+  max_devices=$1
   # List available adb devices:
   (adb devices) | grep -w "device" | awk '{ print $1 }' | 
 
 # Execute the scrcpy command on every device connected
   while read device
   do
-    if [[ "$i" -lt $OPTARG ]]; then
+    if [[ "$max_devices" == "all" ]]; then
+      sleep 4
+      nohup scrcpy -s $device &>/dev/null &
+    elif [[ "$i" -lt "$max_devices" ]]; then
       sleep 4
       nohup scrcpy -s $device &>/dev/null &
       ((i++))
@@ -23,18 +28,20 @@ execute () {
   done
 }
 
-while getopts ":n:" opt; do
+while getopts ":n: a" opt; do
   case $opt in
+    a)
+      execute "all"
+      ;;
     n)
-      echo "-n was triggered, Parameter: $OPTARG" >&2
-      execute
+      execute $OPTARG
       ;;
     \?)
-      echo "Invalid option: -$OPTARG" >&2
+      echo "Invalid option: $OPTARG" >&2
       exit 1
       ;;
     :)
-      echo "Option -$OPTARG requires an argument." >&2
+      echo "Option $OPTARG requires an argument." >&2
       exit 1
       ;;
   esac
